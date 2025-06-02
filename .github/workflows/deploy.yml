@@ -20,6 +20,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Set up environment variables
+        run: |
+          echo "VITE_REACT_APP_API_BASE_URL=${{ secrets.VITE_API_URL }}" >> .env
+
       - name: Build
         run: npm run build
 
