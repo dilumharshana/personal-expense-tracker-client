@@ -4,6 +4,7 @@ import {
     Delete as DeleteIcon,
     Edit as EditIcon,
     Search as SearchIcon,
+    Clear as ClearIcon,
 } from '@mui/icons-material';
 import {
     Alert,
@@ -32,14 +33,16 @@ import type { Expense, ExpenseFilters, MasterData } from '../Types/Index';
 const ExpensesPage: React.FC = () => {
     const [formOpen, setFormOpen] = useState(false);
     const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
-    const [filters, setFilters] = useState<ExpenseFilters>({});
-    const [masterDataById, setMasterDataById] = useState<{ [key: string]: string }>({})
+    const [frontendFilters, setFrontendFilters] = useState<Omit<ExpenseFilters, 'dateTo'>>({});
+    const [backendDateFilter, setBackendDateFilter] = useState<string>('');
+    const [masterDataById, setMasterDataById] = useState<{ [key: string]: string }>({});
+
     const queryClient = useQueryClient();
 
-
+    // Backend query with date filter - refetches when backendDateFilter changes
     const { data: expenses = [], isLoading: expensesLoading } = useQuery({
-        queryKey: ['expenses'],
-        queryFn: expenseService.getExpenses,
+        queryKey: ['expenses', backendDateFilter],
+        queryFn: () => expenseService.getExpenses(backendDateFilter ? { dateTo: backendDateFilter } : undefined),
     });
 
     const { data: masterData = [] } = useQuery({
@@ -55,19 +58,18 @@ const ExpensesPage: React.FC = () => {
         },
     });
 
+    // Frontend filtering (excluding dateTo which is handled by backend)
     const filteredExpenses = useMemo(() => {
         return expenses?.filter((expense) => {
-            const matchesType = !filters.type || expense.type === filters.type;
-            const matchesDescription = !filters.description ||
-                expense.description.toLowerCase().includes(filters.description.toLowerCase());
-            const matchesDateFrom = !filters.dateFrom ||
-                new Date(expense.date) >= new Date(filters.dateFrom);
-            const matchesDateTo = !filters.dateTo ||
-                new Date(expense.date) <= new Date(filters.dateTo);
+            const matchesType = !frontendFilters.type || expense.type === frontendFilters.type;
+            const matchesDescription = !frontendFilters.description ||
+                expense.description.toLowerCase().includes(frontendFilters.description.toLowerCase());
+            const matchesDateFrom = !frontendFilters.dateFrom ||
+                new Date(expense.date) >= new Date(frontendFilters.dateFrom);
 
-            return matchesType && matchesDescription && matchesDateFrom && matchesDateTo;
+            return matchesType && matchesDescription && matchesDateFrom;
         });
-    }, [expenses, filters]);
+    }, [expenses, frontendFilters]);
 
     const currentMonthTotal = useMemo(() => {
         const currentMonth = new Date().getMonth();
@@ -84,20 +86,19 @@ const ExpensesPage: React.FC = () => {
 
     useEffect(() => {
         if (masterData?.length > 0) {
-            prepareMasterDataByObject()
+            prepareMasterDataByObject();
         }
-    }, [masterData])
+    }, [masterData]);
 
     const prepareMasterDataByObject = () => {
-
         const masterDataById: { [key: string]: string } = {};
 
         masterData?.forEach((masterData: MasterData) => {
-            masterDataById[masterData?._id] = masterData.title
-        })
+            masterDataById[masterData?._id] = masterData.title;
+        });
 
-        setMasterDataById(masterDataById)
-    }
+        setMasterDataById(masterDataById);
+    };
 
     const handleEdit = (expense: Expense) => {
         setSelectedExpense(expense);
@@ -115,6 +116,28 @@ const ExpensesPage: React.FC = () => {
         setSelectedExpense(undefined);
     };
 
+    const handleFrontendFilterChange = (filterKey: keyof Omit<ExpenseFilters, 'dateTo'>, value: string | undefined) => {
+        setFrontendFilters(prev => ({
+            ...prev,
+            [filterKey]: value
+        }));
+    };
+
+    const handleDateToFilterChange = (dateTo: string) => {
+        setBackendDateFilter(dateTo);
+        // Also invalidate dashboard queries when date filter changes
+        if (dateTo) {
+            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+        }
+    };
+
+    const handleClearFilters = () => {
+        setFrontendFilters({});
+        setBackendDateFilter('');
+        // Refetch dashboard data to reset to initial state
+        queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    };
+
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-LK', {
             style: 'currency',
@@ -122,9 +145,16 @@ const ExpensesPage: React.FC = () => {
         }).format(amount);
     };
 
+    // Check if any filters are active
+    const hasActiveFilters = useMemo(() => {
+        return !!(frontendFilters.type || frontendFilters.description || frontendFilters.dateFrom || backendDateFilter);
+    }, [frontendFilters, backendDateFilter]);
+
+
+    const todayDate = new Date().toISOString().split('T')[0];
+
     return (
         <Box>
-
             <ExpenseForm
                 open={formOpen}
                 onClose={handleFormClose}
@@ -160,17 +190,30 @@ const ExpensesPage: React.FC = () => {
             </Grid>
 
             <Paper sx={{ p: 2, mb: 3 }}>
-                <Typography variant="h6" gutterBottom>
-                    Filters
-                </Typography>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                    <Typography variant="h6">
+                        Filters
+                    </Typography>
+                    {hasActiveFilters && (
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            startIcon={<ClearIcon />}
+                            onClick={handleClearFilters}
+                            color="secondary"
+                        >
+                            Clear Filters
+                        </Button>
+                    )}
+                </Box>
                 <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 6 }} >
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <TextField
                             select
                             fullWidth
                             label="Expense Type"
-                            value={filters.type || ''}
-                            onChange={(e) => setFilters({ ...filters, type: e.target.value || undefined })}
+                            value={frontendFilters.type || ''}
+                            onChange={(e) => handleFrontendFilterChange('type', e.target.value || undefined)}
                             size="small"
                         >
                             <MenuItem value="">All Types</MenuItem>
@@ -181,12 +224,12 @@ const ExpensesPage: React.FC = () => {
                             ))}
                         </TextField>
                     </Grid>
-                    <Grid size={{ xs: 12, md: 6 }} >
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <TextField
                             fullWidth
                             label="Description"
-                            value={filters.description || ''}
-                            onChange={(e) => setFilters({ ...filters, description: e.target.value || undefined })}
+                            value={frontendFilters.description || ''}
+                            onChange={(e) => handleFrontendFilterChange('description', e.target.value || undefined)}
                             size="small"
                             InputProps={{
                                 endAdornment: <SearchIcon />,
@@ -198,19 +241,22 @@ const ExpensesPage: React.FC = () => {
                             fullWidth
                             label="From Date"
                             type="date"
-                            value={filters.dateFrom || ''}
-                            onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value || undefined })}
+                            value={frontendFilters.dateFrom || ''}
+                            onChange={(e) => handleFrontendFilterChange('dateFrom', e.target.value || undefined)}
                             size="small"
                             InputLabelProps={{ shrink: true }}
                         />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 6 }} >
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <TextField
                             fullWidth
                             label="To Date"
+                            inputProps={{
+                                max: todayDate,
+                            }}
                             type="date"
-                            value={filters.dateTo || ''}
-                            onChange={(e) => setFilters({ ...filters, dateTo: e.target.value || undefined })}
+                            value={backendDateFilter || ''}
+                            onChange={(e) => handleDateToFilterChange(e.target.value)}
                             size="small"
                             InputLabelProps={{ shrink: true }}
                         />
@@ -256,10 +302,10 @@ const ExpensesPage: React.FC = () => {
                                     />
                                 </TableCell>
                                 <TableCell>{expense.description}</TableCell>
-                                <TableCell >
+                                <TableCell>
                                     {formatCurrency(expense.amount)}
                                 </TableCell>
-                                <TableCell >
+                                <TableCell>
                                     <IconButton
                                         size="small"
                                         onClick={() => handleEdit(expense)}

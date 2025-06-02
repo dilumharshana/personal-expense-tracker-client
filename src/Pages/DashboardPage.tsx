@@ -102,6 +102,8 @@ const Dashboard: React.FC = () => {
         };
     }, [dashboardData]);
 
+
+    // dashboard loading state 
     if (dashboardLoading) {
         return (
             <Box>

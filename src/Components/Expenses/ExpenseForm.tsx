@@ -93,6 +93,8 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
     const isLoading = createMutation.isPending || updateMutation.isPending;
     const error = createMutation.error || updateMutation.error;
 
+    const todayDate = new Date().toISOString().split('T')[0];
+
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>
@@ -170,6 +172,9 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
                         margin="normal"
                         InputLabelProps={{
                             shrink: true,
+                        }}
+                        inputProps={{
+                            max: todayDate,
                         }}
                         required
                     />
