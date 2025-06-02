@@ -1,15 +1,18 @@
 // src/App.tsx
-import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, CircularProgress, Box } from '@mui/material';
+import React, { Suspense } from 'react';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import './App.css';
+import LoadingFallback from './Components/Common/LoadingFallback';
 import ProtectedRoute from './Components/Routes/ProtectedRoute';
+import { styleTheme } from './Configs/StyleConfigs';
 import MainLayout from './Layouts/MainLayout';
 import Dashboard from './Pages/DashboardPage';
 import Expenses from './Pages/ExpensePage';
 import MasterData from './Pages/MasterDataPage';
-import './App.css'
+import { appConfigs } from './Configs/AppConfigs';
 
 
 const queryClient = new QueryClient({
@@ -21,41 +24,10 @@ const queryClient = new QueryClient({
   },
 });
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#dc004e',
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-        },
-      },
-    },
-  },
-});
-
-const LoadingFallback: React.FC = () => (
-  <Box
-    display="flex"
-    justifyContent="center"
-    alignItems="center"
-    minHeight="100vh"
-  >
-    <CircularProgress />
-  </Box>
-);
-
 const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={styleTheme}>
         <CssBaseline />
         <Router>
           <Suspense fallback={<LoadingFallback />}>
@@ -68,10 +40,10 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               >
-                <Route index element={<Navigate to="/dashboard" replace />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="expenses" element={<Expenses />} />
-                <Route path="master-data" element={<MasterData />} />
+                <Route index element={<Navigate to={`/${appConfigs.routePaths.dashboard}`} replace />} />
+                <Route path={appConfigs.routePaths.dashboard} element={<Dashboard />} />
+                <Route path={appConfigs.routePaths.expenses} element={<Expenses />} />
+                <Route path={appConfigs.routePaths.masterData} element={<MasterData />} />
               </Route>
             </Routes>
           </Suspense>

@@ -1,4 +1,4 @@
-// src/pages/Dashboard.tsx
+import React from 'react';
 import {
     Alert,
     Box,
@@ -10,16 +10,14 @@ import {
 } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
-
-import React from 'react';
 import BarChartComponent from '../Components/Common/BarChartComponent';
 import PieChartComponent from '../Components/Common/PieChartComponent';
 import { expenseService } from '../Services/ExpenseService';
 import { masterDataService } from '../Services/MasterDataService';
-import { generateColorScale } from '../Utilis/Helpers';
+import { formatCurrency, generateColorScale } from '../Utilis/Helpers';
 
 
-
+// prepare dates for send with Dashboard data fetch end points 
 const date = new Date();
 const month = date.getMonth()
 const year = date.getFullYear();
@@ -36,13 +34,7 @@ const Dashboard: React.FC = () => {
         queryFn: masterDataService.getMasterData,
     });
 
-    const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('en-LK', {
-            style: 'currency',
-            currency: 'LKR',
-        }).format(amount);
-    };
-
+    // get master data title 
     const getMasterDataTitle = (id: string) => {
         return masterData?.find((item) => item._id === id)?.title || 'Unknown';
     };
@@ -101,7 +93,6 @@ const Dashboard: React.FC = () => {
             ],
         };
     }, [dashboardData]);
-
 
     // dashboard loading state 
     if (dashboardLoading) {

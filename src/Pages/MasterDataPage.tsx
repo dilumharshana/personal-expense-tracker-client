@@ -21,10 +21,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
+
 import { ExpenseTypesTableColumns } from '../Constants/Index';
 import TableComponent from '../Components/Common/TableComponent';
 import { masterDataService } from '../Services/MasterDataService';
 import type { MasterData } from '../Types/Index';
+import { appConfigs } from '../Configs/AppConfigs';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -36,14 +38,14 @@ const MasterDataPage: React.FC = () => {
     const queryClient = useQueryClient();
 
     const { data: masterData = [], isLoading } = useQuery({
-        queryKey: ['masterData'],
+        queryKey: [appConfigs.queryKeys.masterData],
         queryFn: masterDataService.getMasterData,
     });
 
     const createMutation = useMutation({
         mutationFn: masterDataService.createMasterData,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['masterData'] });
+            queryClient.invalidateQueries({ queryKey: [appConfigs.queryKeys.masterData] });
             setDialogOpen(false);
             formik.resetForm();
         },
@@ -53,7 +55,7 @@ const MasterDataPage: React.FC = () => {
         mutationFn: ({ id, data }: { id: string; data: { title: string } }) =>
             masterDataService.updateMasterData(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['masterData'] });
+            queryClient.invalidateQueries({ queryKey: [appConfigs.queryKeys.masterData] });
             setDialogOpen(false);
             setSelectedItem(undefined);
             formik.resetForm();
@@ -63,7 +65,7 @@ const MasterDataPage: React.FC = () => {
     const deleteMutation = useMutation({
         mutationFn: masterDataService.deleteMasterData,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['masterData'] });
+            queryClient.invalidateQueries({ queryKey: [appConfigs.queryKeys.masterData] });
         },
     });
 

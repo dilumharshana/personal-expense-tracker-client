@@ -1,4 +1,4 @@
-// src/pages/Expenses.tsx
+
 import {
     Add as AddIcon,
     Delete as DeleteIcon,
@@ -24,11 +24,13 @@ import {
 } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useState } from 'react';
+
 import TableComponent from '../Components/Common/TableComponent';
 import ExpenseForm from '../Components/Expenses/ExpenseForm';
 import { expenseService } from '../Services/ExpenseService';
 import { masterDataService } from '../Services/MasterDataService';
 import type { Expense, ExpenseFilters, MasterData } from '../Types/Index';
+import { appConfigs } from '../Configs/AppConfigs';
 
 const ExpensesPage: React.FC = () => {
     const [formOpen, setFormOpen] = useState(false);
@@ -41,20 +43,20 @@ const ExpensesPage: React.FC = () => {
 
     // Backend query with date filter - refetches when backendDateFilter changes
     const { data: expenses = [], isLoading: expensesLoading } = useQuery({
-        queryKey: ['expenses', backendDateFilter],
+        queryKey: [appConfigs.queryKeys.expenses, backendDateFilter],
         queryFn: () => expenseService.getExpenses(backendDateFilter ? { dateTo: backendDateFilter } : undefined),
     });
 
     const { data: masterData = [] } = useQuery({
-        queryKey: ['masterData'],
+        queryKey: [appConfigs.queryKeys.masterData],
         queryFn: masterDataService.getMasterData,
     });
 
     const deleteMutation = useMutation({
         mutationFn: expenseService.deleteExpense,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['expenses'] });
-            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+            queryClient.invalidateQueries({ queryKey: [appConfigs.queryKeys.expenses] });
+            queryClient.invalidateQueries({ queryKey: [appConfigs.queryKeys.dashboard] });
         },
     });
 
@@ -71,6 +73,7 @@ const ExpensesPage: React.FC = () => {
         });
     }, [expenses, frontendFilters]);
 
+    // calculate current month total 
     const currentMonthTotal = useMemo(() => {
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
@@ -127,7 +130,7 @@ const ExpensesPage: React.FC = () => {
         setBackendDateFilter(dateTo);
         // Also invalidate dashboard queries when date filter changes
         if (dateTo) {
-            queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+            queryClient.invalidateQueries({ queryKey: [appConfigs.queryKeys.dashboard] });
         }
     };
 
@@ -135,13 +138,13 @@ const ExpensesPage: React.FC = () => {
         setFrontendFilters({});
         setBackendDateFilter('');
         // Refetch dashboard data to reset to initial state
-        queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+        queryClient.invalidateQueries({ queryKey: [appConfigs.queryKeys.dashboard] });
     };
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-LK', {
             style: 'currency',
-            currency: 'LKR',
+            currency: appConfigs.currency.lkr,
         }).format(amount);
     };
 

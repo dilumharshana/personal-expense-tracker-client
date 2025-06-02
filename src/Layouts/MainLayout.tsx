@@ -20,6 +20,7 @@ import {
     Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { useNavigate, Outlet } from 'react-router-dom';
+import { appConfigs } from '../Configs/AppConfigs';
 
 
 const DRAWER_WIDTH = 240;
@@ -36,9 +37,9 @@ const AppLayout: React.FC = () => {
 
 
     const menuItems = [
-        { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-        { text: 'Expenses', icon: <ExpenseIcon />, path: '/expenses' },
-        { text: 'Master Data', icon: <SettingsIcon />, path: '/master-data' },
+        { text: appConfigs.menuItems.dashboard, icon: <DashboardIcon />, path: `/${appConfigs.routePaths.dashboard}` },
+        { text: appConfigs.menuItems.expenses, icon: <ExpenseIcon />, path: `/${appConfigs.routePaths.expenses}` },
+        { text: appConfigs.menuItems.masterData, icon: <SettingsIcon />, path: `/${appConfigs.routePaths.masterData}` },
     ];
 
     const drawer = (

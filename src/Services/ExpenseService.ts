@@ -2,13 +2,14 @@
 import { apiClient } from "../Utilis/ApiClient";
 import { API_ENDPOINTS } from "../Configs/Api";
 import type { Expense, ExpenseFormData, DashboardData } from "../Types/Index";
+import { appConfigs } from "../Configs/AppConfigs";
 
 export const expenseService = {
   getExpenses: async (filters?: { dateTo?: string }): Promise<Expense[]> => {
     const params = new URLSearchParams();
 
     if (filters?.dateTo) {
-      params.append("dateTo", filters.dateTo);
+      params.append(appConfigs.params.dateTo, filters.dateTo);
     }
 
     const queryString = params.toString();
@@ -43,11 +44,11 @@ export const expenseService = {
     dateTo?: string
   ): Promise<DashboardData> => {
     const params = new URLSearchParams();
-    params.append("month", month.toString());
-    params.append("year", year.toString());
+    params.append(appConfigs.params.month, month.toString());
+    params.append(appConfigs.params.year, year.toString());
 
     if (dateTo) {
-      params.append("dateTo", dateTo);
+      params.append(appConfigs.params.dateTo, dateTo);
     }
 
     const queryString = params.toString();

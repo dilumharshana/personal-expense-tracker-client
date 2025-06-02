@@ -8,3 +8,11 @@ export const generateColorScale = (count: number) => {
   }
   return colors;
 };
+
+// helper for format currency
+export const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat("en-LK", {
+    style: "currency",
+    currency: "LKR"
+  }).format(amount);
+};
