@@ -85,6 +85,7 @@ const AppLayout: React.FC = () => {
                 </Toolbar>
             </AppBar>
 
+            {/* dash board menu panel */}
             <Box
                 component="nav"
                 sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}
@@ -115,6 +116,7 @@ const AppLayout: React.FC = () => {
                 </Drawer>
             </Box>
 
+            {/* out let component  */}
             <Box
                 component="main"
                 sx={{
