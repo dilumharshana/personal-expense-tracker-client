@@ -15,11 +15,11 @@ export const expenseService = {
 
   updateExpense: async (
     id: string,
-    expense: ExpenseFormData
+    expense: ExpenseFormData,
   ): Promise<Expense> => {
     return await apiClient.patch<Expense>(
       `${API_ENDPOINTS.EXPENSES.BASE}/${id}`,
-      expense
+      expense,
     );
   },
 
@@ -30,7 +30,7 @@ export const expenseService = {
   getDashboardData: async (
     month: number,
     year: number,
-    dateTo?: string
+    dateTo?: string,
   ): Promise<DashboardData> => {
     const params = new URLSearchParams();
     params.append(appConfigs.params.month, month.toString());
@@ -44,5 +44,5 @@ export const expenseService = {
     const url = `${API_ENDPOINTS.EXPENSES.DASHBOARD}?${queryString}`;
 
     return await apiClient.get(url);
-  }
+  },
 };

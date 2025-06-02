@@ -4,19 +4,19 @@ import { createTheme } from "@mui/material";
 export const styleTheme = createTheme({
   palette: {
     primary: {
-      main: "#1976d2"
+      main: "#1976d2",
     },
     secondary: {
-      main: "#dc004e"
-    }
+      main: "#dc004e",
+    },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: "none"
-        }
-      }
-    }
-  }
+          textTransform: "none",
+        },
+      },
+    },
+  },
 });

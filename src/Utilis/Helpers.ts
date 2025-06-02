@@ -13,6 +13,6 @@ export const generateColorScale = (count: number) => {
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("en-LK", {
     style: "currency",
-    currency: "LKR"
+    currency: "LKR",
   }).format(amount);
 };

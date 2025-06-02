@@ -3,24 +3,24 @@ export const appConfigs = {
   routePaths: {
     dashboard: "dashboard",
     expenses: "expenses",
-    masterData: "master-data"
+    masterData: "master-data",
   },
   menuItems: {
     dashboard: "Dashboard",
     expenses: "Expenses",
-    masterData: "Master Data"
+    masterData: "Master Data",
   },
   queryKeys: {
     expenses: "expenses",
     masterData: "masterData",
-    dashboard: "dashboard"
+    dashboard: "dashboard",
   },
   currency: {
-    lkr: "LKR"
+    lkr: "LKR",
   },
   params: {
     dateTo: "dateTo",
     month: "month",
-    year: "year"
-  }
+    year: "year",
+  },
 };

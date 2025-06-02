@@ -14,15 +14,15 @@ export const masterDataService = {
 
   updateMasterData: async (
     id: string,
-    data: { title: string }
+    data: { title: string },
   ): Promise<MasterData> => {
     return await apiClient.patch<MasterData>(
       `${API_ENDPOINTS.MASTER_DATA}/${id}`,
-      data
+      data,
     );
   },
 
   deleteMasterData: async (id: string): Promise<void> => {
     return await apiClient.delete<void>(`${API_ENDPOINTS.MASTER_DATA}/${id}`);
-  }
+  },
 };

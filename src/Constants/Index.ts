@@ -4,7 +4,7 @@ export const expenseTableColumns = [
   "Type",
   "Description",
   "Amount",
-  "Actions"
+  "Actions",
 ];
 
 // table heads of expense types master data table

@@ -2,7 +2,7 @@
 import axios, {
   type AxiosInstance,
   type AxiosRequestConfig,
-  type AxiosResponse
+  type AxiosResponse,
 } from "axios";
 import { API_CONFIG } from "../Configs/Api";
 
@@ -14,8 +14,8 @@ class ApiClient {
       baseURL: API_CONFIG.BASE_URL,
       timeout: API_CONFIG.TIMEOUT,
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     });
 
     this.setupInterceptors();
@@ -31,7 +31,7 @@ class ApiClient {
         }
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     // Response interceptor for error handling
@@ -44,7 +44,7 @@ class ApiClient {
           window.location.href = "/login";
         }
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -56,12 +56,12 @@ class ApiClient {
   async post<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> {
     const response: AxiosResponse<T> = await this.client.post(
       url,
       data,
-      config
+      config,
     );
     return response.data;
   }
@@ -69,7 +69,7 @@ class ApiClient {
   async put<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> {
     const response: AxiosResponse<T> = await this.client.put(url, data, config);
     return response.data;
@@ -78,12 +78,12 @@ class ApiClient {
   async patch<T>(
     url: string,
     data?: any,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
   ): Promise<T> {
     const response: AxiosResponse<T> = await this.client.patch(
       url,
       data,
-      config
+      config,
     );
     return response.data;
   }
