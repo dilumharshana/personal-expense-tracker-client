@@ -126,7 +126,7 @@ const Dashboard: React.FC = () => {
             )}
 
             <Grid container spacing={3} mb={4}>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }} >
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom color="primary">
@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }} >
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom color="primary">
@@ -153,7 +153,7 @@ const Dashboard: React.FC = () => {
             </Grid>
 
             <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }} >
                     <Paper sx={{ p: 3 }}>
                         <Typography variant="h6" gutterBottom>
                             Expense Patterns by Type
@@ -171,7 +171,7 @@ const Dashboard: React.FC = () => {
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }} >
                     <Paper sx={{ p: 3 }}>
                         <Typography variant="h6" gutterBottom>
                             Daily Expenses

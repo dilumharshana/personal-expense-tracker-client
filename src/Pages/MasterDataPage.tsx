@@ -1,4 +1,3 @@
-// src/pages/MasterData.tsx
 import {
     Add as AddIcon,
     Delete as DeleteIcon,
@@ -31,7 +30,7 @@ const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
 });
 
-const MasterData: React.FC = () => {
+const MasterDataPage: React.FC = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<MasterData | undefined>();
     const queryClient = useQueryClient();
@@ -130,7 +129,7 @@ const MasterData: React.FC = () => {
             )}
 
             {/* expense table component  */}
-            <TableComponent masterData={masterData} isLoading={isLoading} onEdit={handleEdit} onDelete={handleDelete} isDeletePending={deleteMutation.isPending} columns={ExpenseTypesTableColumns} tableRows={<>
+            <TableComponent isLoading={isLoading} onEdit={(row: unknown) => handleEdit(row as MasterData)} onDelete={handleDelete} isDeletePending={deleteMutation.isPending} columns={ExpenseTypesTableColumns} tableRows={<>
                 {isLoading ? (
                     <TableRow>
                         <TableCell colSpan={2} align="center">
@@ -216,4 +215,4 @@ const MasterData: React.FC = () => {
     );
 };
 
-export default MasterData;
+export default MasterDataPage;

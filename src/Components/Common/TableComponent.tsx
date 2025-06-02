@@ -45,7 +45,7 @@ const MemoizedTableHeader = memo(({
     columns: string[];
 }) => (
     <TableHead>
-        {columns?.map((label, index) => (
+        {columns?.map((label) => (
             <TableCell key={String(label)} >
                 {label}
             </TableCell>

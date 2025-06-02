@@ -23,13 +23,13 @@ import {
 } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useState } from 'react';
-import TableComponent, { type Column } from '../Components/Common/TableComponent';
+import TableComponent from '../Components/Common/TableComponent';
 import ExpenseForm from '../Components/Expenses/ExpenseForm';
 import { expenseService } from '../Services/ExpenseService';
 import { masterDataService } from '../Services/MasterDataService';
 import type { Expense, ExpenseFilters, MasterData } from '../Types/Index';
 
-const Expenses: React.FC = () => {
+const ExpensesPage: React.FC = () => {
     const [formOpen, setFormOpen] = useState(false);
     const [selectedExpense, setSelectedExpense] = useState<Expense | undefined>();
     const [filters, setFilters] = useState<ExpenseFilters>({});
@@ -122,18 +122,6 @@ const Expenses: React.FC = () => {
         }).format(amount);
     };
 
-    const columns: Column<Expense>[] = [
-        {
-            key: 'date',
-            label: 'Date',
-            render: (value) => new Date(value as string).toLocaleDateString(),
-        },
-        { key: 'type', label: 'Type' },
-        { key: 'description', label: 'Description' },
-        { key: 'amount', label: 'Amount', align: 'right' },
-
-    ];
-
     return (
         <Box>
 
@@ -157,7 +145,7 @@ const Expenses: React.FC = () => {
             </Box>
 
             <Grid container spacing={3} mb={3}>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -176,7 +164,7 @@ const Expenses: React.FC = () => {
                     Filters
                 </Typography>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid size={{ xs: 12, md: 6 }} >
                         <TextField
                             select
                             fullWidth
@@ -193,7 +181,7 @@ const Expenses: React.FC = () => {
                             ))}
                         </TextField>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid size={{ xs: 12, md: 6 }} >
                         <TextField
                             fullWidth
                             label="Description"
@@ -205,7 +193,7 @@ const Expenses: React.FC = () => {
                             }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                         <TextField
                             fullWidth
                             label="From Date"
@@ -216,7 +204,7 @@ const Expenses: React.FC = () => {
                             InputLabelProps={{ shrink: true }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid size={{ xs: 12, md: 6 }} >
                         <TextField
                             fullWidth
                             label="To Date"
@@ -237,6 +225,10 @@ const Expenses: React.FC = () => {
             )}
 
             <TableComponent
+                columns={['Date', 'Type', 'Description', 'Amount', 'Actions']}
+                isLoading={expensesLoading || deleteMutation.isPending}
+                onEdit={(row: unknown) => handleEdit(row as Expense)}
+                onDelete={(id) => handleDelete(id)}
                 tableRows={<>
                     {(expensesLoading || deleteMutation.isPending) ? (
                         <TableRow>
@@ -288,13 +280,9 @@ const Expenses: React.FC = () => {
                         ))
                     )}
                 </>}
-                columns={['Date', 'Type', 'Description', 'Amount', 'Actions']}
-                isLoading={expensesLoading || deleteMutation.isPending}
-                onEdit={(row) => handleEdit(row)}
-                onDelete={(id) => handleDelete(id)}
             />
         </Box>
     );
 };
 
-export default Expenses;
+export default ExpensesPage;

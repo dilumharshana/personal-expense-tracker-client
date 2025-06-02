@@ -23,7 +23,7 @@ const PieChartComponent: React.FC<IPieChartComponent> = ({ expensePatterns }) =>
                     },
                     datalabels: {
                         color: '#fff',               // white text for contrast
-                        formatter: (value: number, ctx) => {
+                        formatter: (_value: number, ctx) => {
                             const label = ctx.chart.data.labels?.[ctx.dataIndex];
                             return label;               // Show label inside slice
                         },
