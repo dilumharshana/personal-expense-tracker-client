@@ -1,4 +1,3 @@
-// src/App.tsx
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -13,7 +12,6 @@ import Dashboard from './Pages/DashboardPage';
 import Expenses from './Pages/ExpensePage';
 import MasterData from './Pages/MasterDataPage';
 import { appConfigs } from './Configs/AppConfigs';
-
 
 const queryClient = new QueryClient({
   defaultOptions: {
