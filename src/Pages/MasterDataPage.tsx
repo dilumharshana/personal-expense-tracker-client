@@ -74,6 +74,13 @@ const MasterDataPage: React.FC = () => {
         validationSchema,
         enableReinitialize: true,
         onSubmit: (values) => {
+
+            const isTypeExists = masterData.find((title: MasterData) => title.title.toLowerCase() === values.title.toLowerCase())
+
+            if (isTypeExists) {
+                return alert('This expense type is already exists !')
+            }
+
             if (selectedItem) {
                 updateMutation.mutate({ id: selectedItem._id, data: values });
             } else {
