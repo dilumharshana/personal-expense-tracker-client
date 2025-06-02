@@ -27,6 +27,7 @@ import TableComponent from '../Components/Common/TableComponent';
 import { masterDataService } from '../Services/MasterDataService';
 import type { MasterData } from '../Types/Index';
 import { appConfigs } from '../Configs/AppConfigs';
+import type { AxiosError } from 'axios';
 
 const validationSchema = Yup.object({
     title: Yup.string().required('Title is required'),
@@ -133,7 +134,17 @@ const MasterDataPage: React.FC = () => {
 
             {deleteMutation.isError && (
                 <Alert severity="error" sx={{ mb: 2 }}>
-                    Failed to delete expense type. It might be in use by existing expenses.
+                    {
+                        ((): string => {
+                            const axiosError = deleteMutation.error as AxiosError<{ message?: string; error?: string }>;
+                            return (
+                                axiosError?.response?.data?.error ||
+                                axiosError?.response?.data?.message ||
+                                axiosError.message ||
+                                "Failed to delete expense type. It might be in use by existing expenses."
+                            );
+                        })()
+                    }
                 </Alert>
             )}
 
