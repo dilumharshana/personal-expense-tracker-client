@@ -22,10 +22,13 @@ const PieChartComponent: React.FC<IPieChartComponent> = ({ expensePatterns }) =>
                         position: "bottom",
                     },
                     datalabels: {
-                        color: '#fff',               // white text for contrast
+                        color: '#fff',
                         formatter: (_value: number, ctx) => {
-                            const label = ctx.chart.data.labels?.[ctx.dataIndex];
-                            return label;               // Show label inside slice
+                            // calculate the percentage 
+                            const dataArr = ctx.chart.data.datasets[0].data as number[];
+                            const total: number = dataArr.reduce((acc: number, val: number) => acc + val, 0);
+                            const percentage = ((_value / total) * 100).toFixed(1);
+                            return `${percentage} %`;
                         },
                         font: {
                             weight: 'bold',
