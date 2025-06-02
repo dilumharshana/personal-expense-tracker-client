@@ -159,6 +159,7 @@ const ExpensesPage: React.FC = () => {
                 open={formOpen}
                 onClose={handleFormClose}
                 expense={selectedExpense}
+                key={Math.random()}
             />
 
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
