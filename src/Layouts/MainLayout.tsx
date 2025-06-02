@@ -60,6 +60,7 @@ const MainLayout: React.FC = () => {
         },
     ];
 
+    // get active route 
     const isActiveRoute = (path: string): boolean => {
         return location.pathname === path;
     };
@@ -222,7 +223,6 @@ const MainLayout: React.FC = () => {
                             xs: '100%',
                             md: `calc(100% - ${DRAWER_WIDTH}px)`
                         },
-                        minHeight: 'calc(100vh - 64px)',
                         backgroundColor: theme.palette.background.default,
                     }}
                 >
