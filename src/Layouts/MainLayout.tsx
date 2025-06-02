@@ -1,4 +1,3 @@
-// src/components/Layout/AppLayout.tsx
 import React, { useState } from 'react';
 import {
     AppBar,
@@ -44,7 +43,6 @@ const AppLayout: React.FC = () => {
 
     const drawer = (
         <div>
-            <Toolbar />
             <List>
                 {menuItems.map((item) => (
                     <ListItem
@@ -53,17 +51,12 @@ const AppLayout: React.FC = () => {
                             navigate(item.path);
                             if (isMobile) setMobileOpen(false);
                         }}
+                        className='dashboard-item'
                     >
                         <ListItemIcon>{item.icon}</ListItemIcon>
                         <ListItemText primary={item.text} />
                     </ListItem>
                 ))}
-                {/* <ListItem button onClick={}>
-                    <ListItemIcon>
-                        <LogoutIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Logout" />
-                </ListItem> */}
             </List>
         </div>
     );

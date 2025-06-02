@@ -9,6 +9,7 @@ import MainLayout from './Layouts/MainLayout';
 import Dashboard from './Pages/DashboardPage';
 import Expenses from './Pages/ExpensePage';
 import MasterData from './Pages/MasterDataPage';
+import './App.css'
 
 
 const queryClient = new QueryClient({
