@@ -5,19 +5,8 @@ import type { Expense, ExpenseFormData, DashboardData } from "../Types/Index";
 import { appConfigs } from "../Configs/AppConfigs";
 
 export const expenseService = {
-  getExpenses: async (filters?: { dateTo?: string }): Promise<Expense[]> => {
-    const params = new URLSearchParams();
-
-    if (filters?.dateTo) {
-      params.append(appConfigs.params.dateTo, filters.dateTo);
-    }
-
-    const queryString = params.toString();
-    const url = queryString
-      ? `${API_ENDPOINTS.EXPENSES.BASE}?${queryString}`
-      : API_ENDPOINTS.EXPENSES.BASE;
-
-    return await apiClient.get<Expense[]>(url);
+  getExpenses: async (): Promise<Expense[]> => {
+    return await apiClient.get<Expense[]>(API_ENDPOINTS.EXPENSES.BASE);
   },
 
   createExpense: async (expense: ExpenseFormData): Promise<Expense> => {
