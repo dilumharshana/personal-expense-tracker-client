@@ -77,8 +77,6 @@ const ExpenseForm: React.FC<ExpenseFormProps> = ({
         validationSchema,
         enableReinitialize: true,
         onSubmit: (values) => {
-            console.log(values);
-
             const data = {
                 ...values,
                 amount: Number(values.amount),
